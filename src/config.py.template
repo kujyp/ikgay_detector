@@ -1,0 +1,4 @@
+MY_ACCOUNT = "account"
+MY_PASSWORD = "password"
+SITE_HOST = "https://www.site.com"
+EACH_POST_RANDOM_SEARCH_COUNT = 32
