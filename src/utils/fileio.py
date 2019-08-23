@@ -4,13 +4,17 @@ import os
 from src.utils import console
 
 
-def make_parent_path_if_doesnt_exist(path):
-    parent_path = os.path.dirname(path)
+def make_path_if_doesnt_exist(path):
     if not path:
         return
 
-    if not os.path.exists(parent_path):
-        os.makedirs(parent_path)
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
+def make_parent_path_if_doesnt_exist(path):
+    parent_path = os.path.dirname(path)
+    make_path_if_doesnt_exist(parent_path)
 
 
 def save_as_json(path, o):

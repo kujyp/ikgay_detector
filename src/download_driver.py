@@ -5,7 +5,7 @@ from src.utils.shell import get_statement_with_cd, execute_with_message
 
 
 def download_driver(target_directory):
-    fileio.make_parent_path_if_doesnt_exist(target_directory)
+    fileio.make_path_if_doesnt_exist(target_directory)
     url = "https://chromedriver.storage.googleapis.com/2.43/chromedriver_mac64.zip"
     statement = get_statement_with_cd(target_directory, "wget -O {} {}".format("chromedriver.zip", url))
     execute_with_message(statement)

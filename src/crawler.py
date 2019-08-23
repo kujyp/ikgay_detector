@@ -98,21 +98,21 @@ def block_user(driver, board, no):
     selenium_dispatcher.accept_alert(driver)
 
 
-# max_search_post_count: -1 == infinity
-def search_board(driver, board, no, max_search_post_count=-1):
-    console.info()
-    clear_blocked_list(driver)
-    block_user(driver, board, no)
-
+def search_board_from(driver, board, no, from_num, to_num=0, max_search_post_count=-1):
     data_dirname = f"{board}_{no}"
     data_dirpath = os.path.join("data", data_dirname)
     data_searched_dirpath = os.path.join(data_dirpath, "searched")
     data_found_author_dirpath = os.path.join(data_dirpath, "found_author")
     data_found_replier_dirpath = os.path.join(data_dirpath, "found_replier")
 
-    latest_no = get_latest_article_no(driver, board)
-    console.info(f"Search from article no [{latest_no}](latest).")
-    no_target = latest_no
+    if from_num < to_num:
+        console.warn(f"from_num=[{from_num}] < to_num=[{to_num}]. Swap each value.")
+        buff = to_num
+        to_num = from_num
+        from_num = buff
+
+    console.info(f"Search from article no [{from_num}].")
+    no_target = from_num
 
     idx = 0
     exitflag = False
@@ -121,25 +121,25 @@ def search_board(driver, board, no, max_search_post_count=-1):
         if exitflag:
             console.info("exit")
             break
-        if no_target < 0:
+        if no_target < to_num or no_target < 0:
             console.notice("Every article has searched.")
-            break
+            return True
 
         curr_no_items = list(range(no_target, no_target - EACH_POST_RANDOM_SEARCH_COUNT, -1))
         console.info(f"Search article no [{no_target}] ~ [{no_target - EACH_POST_RANDOM_SEARCH_COUNT}] randomly.")
         random.shuffle(curr_no_items)
         for curr_no in curr_no_items:
-            if curr_no < 0:
-                console.notice(f"Skip negative article number. [{curr_no}]")
+            if curr_no < 0 or curr_no < to_num:
+                console.info(f"Skip out of range article number. [{curr_no}]")
                 continue
             if max_search_post_count != -1 and idx >= max_search_post_count:
                 console.notice(f"searched [{max_search_post_count}]")
                 exitflag = True
                 break
 
-            searched_filepath = os.path.join(data_searched_dirpath, str(curr_no))
-            found_author_filepath = os.path.join(data_found_author_dirpath, str(curr_no))
-            found_replier_filepath = os.path.join(data_found_replier_dirpath, str(curr_no))
+            searched_filepath = os.path.join(data_searched_dirpath, f"{str(curr_no)}")
+            found_author_filepath = os.path.join(data_found_author_dirpath, f"{str(curr_no)}.txt")
+            found_replier_filepath = os.path.join(data_found_replier_dirpath, f"{str(curr_no)}.txt")
             link = get_link_with(board, curr_no)
 
             if load_from_json_or_none(searched_filepath) is not None:
@@ -169,6 +169,14 @@ def search_board(driver, board, no, max_search_post_count=-1):
 
             idx += 1
         no_target -= EACH_POST_RANDOM_SEARCH_COUNT
+
+
+# max_search_post_count: -1 == infinity
+def search_board(driver, board, no, to_num=0, max_search_post_count=-1):
+    console.info()
+    latest_no = get_latest_article_no(driver, board)
+    console.info(f"Search from article no [{latest_no}](latest).")
+    search_board_from(driver, board, no, from_num=latest_no, to_num=to_num, max_search_post_count=max_search_post_count)
 
 
 def open_browser(driver_path):

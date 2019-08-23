@@ -4,7 +4,7 @@ import time
 from src.utils import console
 
 
-MAXDELAY_IN_SECONDS = 16.0
+MAXDELAY_IN_SECONDS = 0.5
 
 
 def random_delay():
