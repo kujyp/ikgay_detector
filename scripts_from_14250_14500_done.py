@@ -20,7 +20,7 @@ if __name__ == '__main__':
             # search_board(driver, "mento", "1423661")
 
             ## Search author of <site_url>/bbs/view.php?id=ob&no=167039, in latest 100 articles.
-            searched = search_board_from(driver, "pegasusb_a2157", "8959", from_num=14500, to_num=14250)
+            searched = search_board(driver, "ob", "169942")
             if searched:
                 break
         except WebDriverException as e:

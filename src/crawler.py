@@ -8,6 +8,7 @@ from src.utils import console
 from src.utils.fileio import save_as_json, \
     load_from_json_or_none
 from src.config import SITE_HOST, EACH_POST_RANDOM_SEARCH_COUNT
+from src.consts import SITE_HOST_WITHOUT_TRAILING_SLASH
 
 
 def get_link_with(board, no):
@@ -27,7 +28,7 @@ def get_id_nickname_with_link(driver, link):
 
 
 def get_latest_article_no(driver, board):
-    selenium_dispatcher.driver_get(driver, f"{SITE_HOST}/bbs/zboard.php?id={board}")
+    selenium_dispatcher.driver_get(driver, f"{SITE_HOST_WITHOUT_TRAILING_SLASH}/bbs/zboard.php?id={board}")
     a_tag_element = driver.find_elements_by_class_name("list_title")[0]\
         .find_element_by_xpath('..')
     link = a_tag_element.get_attribute("href")
